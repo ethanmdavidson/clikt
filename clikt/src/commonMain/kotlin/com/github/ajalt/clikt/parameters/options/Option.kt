@@ -7,6 +7,7 @@ import com.github.ajalt.clikt.mpp.readEnvvar
 import com.github.ajalt.clikt.output.HelpFormatter
 import com.github.ajalt.clikt.parsers.OptionParser
 import com.github.ajalt.clikt.sources.ValueSource
+import kotlin.properties.PropertyDelegateProvider
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -78,16 +79,14 @@ interface Option {
 }
 
 /** An option that functions as a property delegate */
-interface OptionDelegate<T> : GroupableOption, ReadOnlyProperty<ParameterHolder, T> {
+interface OptionDelegate<T> : GroupableOption, ReadOnlyProperty<ParameterHolder, T>,
+    PropertyDelegateProvider<ParameterHolder, ReadOnlyProperty<ParameterHolder, T>> {
     /**
      * The value for this option.
      *
      * An exception should be thrown if this property is accessed before [finalize] is called.
      */
     val value: T
-
-    /** Implementations must call [ParameterHolder.registerOption] */
-    operator fun provideDelegate(thisRef: ParameterHolder, prop: KProperty<*>): ReadOnlyProperty<ParameterHolder, T>
 
     override fun getValue(thisRef: ParameterHolder, property: KProperty<*>): T = value
 }
