@@ -3,7 +3,6 @@ package com.github.ajalt.clikt.parameters.options
 import com.github.ajalt.clikt.completion.CompletionCandidates
 import com.github.ajalt.clikt.core.*
 import com.github.ajalt.clikt.mpp.isLetterOrDigit
-import com.github.ajalt.clikt.mpp.readEnvvar
 import com.github.ajalt.clikt.output.HelpFormatter
 import com.github.ajalt.clikt.parsers.OptionParser
 import com.github.ajalt.clikt.sources.ValueSource
@@ -79,12 +78,14 @@ interface Option {
 }
 
 /** An option that functions as a property delegate */
-interface OptionDelegate<T> : GroupableOption, ReadOnlyProperty<ParameterHolder, T>,
+interface OptionDelegate<T> :
+    GroupableOption,
+    ReadOnlyProperty<ParameterHolder, T>,
     PropertyDelegateProvider<ParameterHolder, ReadOnlyProperty<ParameterHolder, T>> {
     /**
      * The value for this option.
      *
-     * An exception should be thrown if this property is accessed before [finalize] is called.
+     * @throws IllegalStateException if this property is accessed before [finalize] is called.
      */
     val value: T
 
