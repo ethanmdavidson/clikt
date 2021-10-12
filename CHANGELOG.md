@@ -3,6 +3,7 @@
 ## Unreleased
 ### Added
 - Added `obj` setter to context builder as an alternative to `currentContext.obj`
+- Added `option().boolean()` and `argument().boolean()`
 
 ## 3.3.0
 ### Added
