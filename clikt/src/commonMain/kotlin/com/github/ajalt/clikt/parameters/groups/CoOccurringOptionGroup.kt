@@ -5,7 +5,7 @@ import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.output.HelpFormatter
 import com.github.ajalt.clikt.parameters.internal.NullableLateinit
 import com.github.ajalt.clikt.parameters.options.Option
-import com.github.ajalt.clikt.parsers.OptionParser
+import com.github.ajalt.clikt.parsers.Invocation
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -32,7 +32,7 @@ class CoOccurringOptionGroup<GroupT : OptionGroup, OutT> internal constructor(
 
     override fun getValue(thisRef: CliktCommand, property: KProperty<*>): OutT = value
 
-    override fun finalize(context: Context, invocationsByOption: Map<Option, List<OptionParser.Invocation>>) {
+    override fun finalize(context: Context, invocationsByOption: Map<Option, List<Invocation>>) {
         occurred = invocationsByOption.isNotEmpty()
         if (occurred) group.finalize(context, invocationsByOption)
         value = transform(occurred, group, context)
