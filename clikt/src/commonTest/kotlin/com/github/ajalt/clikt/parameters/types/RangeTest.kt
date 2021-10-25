@@ -5,6 +5,7 @@ import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.optional
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.testing.TestCommand
+import com.github.ajalt.clikt.testing.formattedMessage
 import com.github.ajalt.clikt.testing.parse
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.data.blocking.forAll
@@ -36,7 +37,7 @@ class RangeTest {
             x shouldBe 3
         }
         shouldThrow<BadParameterValue> { C().parse("--xx=0") }
-            .message shouldBe "Invalid value for \"--xx\": 0 is smaller than the minimum valid value of 1."
+            .formattedMessage shouldBe "Invalid value for \"--xx\": 0 is smaller than the minimum valid value of 1."
     }
 
     @Test
@@ -76,7 +77,7 @@ class RangeTest {
             x shouldBe 0
         }
         shouldThrow<BadParameterValue> { C().parse("--xx=2") }
-            .message shouldBe "Invalid value for \"--xx\": 2 is larger than the maximum valid value of 1."
+            .formattedMessage shouldBe "Invalid value for \"--xx\": 2 is larger than the maximum valid value of 1."
     }
 
     @Test
@@ -116,9 +117,9 @@ class RangeTest {
             x shouldBe 2
         }
         shouldThrow<BadParameterValue> { C().parse("--xx=3") }
-            .message shouldBe "Invalid value for \"--xx\": 3 is not in the valid range of 1 to 2."
+            .formattedMessage shouldBe "Invalid value for \"--xx\": 3 is not in the valid range of 1 to 2."
         shouldThrow<BadParameterValue> { C().parse("-x0") }
-            .message shouldBe "Invalid value for \"-x\": 0 is not in the valid range of 1 to 2."
+            .formattedMessage shouldBe "Invalid value for \"-x\": 0 is not in the valid range of 1 to 2."
     }
 
     @Test
@@ -145,9 +146,9 @@ class RangeTest {
             y shouldBe 4
         }
         shouldThrow<BadParameterValue> { C().parse("--xx=3") }
-            .message shouldBe "Invalid value for \"--xx\": 3 is not in the valid range of 1 to 2."
+            .formattedMessage shouldBe "Invalid value for \"--xx\": 3 is not in the valid range of 1 to 2."
         shouldThrow<BadParameterValue> { C().parse("-y10") }
-            .message shouldBe "Invalid value for \"-y\": 10 is not in the valid range of 3 to 4."
+            .formattedMessage shouldBe "Invalid value for \"-y\": 10 is not in the valid range of 3 to 4."
     }
 
     @Test
@@ -174,9 +175,9 @@ class RangeTest {
             y shouldBe (3 to 4)
         }
         shouldThrow<BadParameterValue> { C().parse("--xx=3") }
-            .message shouldBe "Invalid value for \"--xx\": 3 is not in the valid range of 1 to 2."
+            .formattedMessage shouldBe "Invalid value for \"--xx\": 3 is not in the valid range of 1 to 2."
         shouldThrow<BadParameterValue> { C().parse("-y10 1") }
-            .message shouldBe "Invalid value for \"-y\": 10 is not in the valid range of 3 to 4."
+            .formattedMessage shouldBe "Invalid value for \"-y\": 10 is not in the valid range of 3 to 4."
     }
 
     @Test
@@ -199,9 +200,9 @@ class RangeTest {
             x shouldBe 'd'
         }
         shouldThrow<BadParameterValue> { C().parse("--xx=a") }
-            .message shouldBe "Invalid value for \"--xx\": a is not in the valid range of b to d."
+            .formattedMessage shouldBe "Invalid value for \"--xx\": a is not in the valid range of b to d."
         shouldThrow<BadParameterValue> { C().parse("-xe") }
-            .message shouldBe "Invalid value for \"-x\": e is not in the valid range of b to d."
+            .formattedMessage shouldBe "Invalid value for \"-x\": e is not in the valid range of b to d."
     }
 
     @Test
@@ -236,9 +237,9 @@ class RangeTest {
             w shouldBe 8
         }
         shouldThrow<BadParameterValue> { C().parse("0 4 6 8") }
-            .message shouldBe "Invalid value for \"X\": 0 is not in the valid range of 1 to 2."
+            .formattedMessage shouldBe "Invalid value for \"X\": 0 is not in the valid range of 1 to 2."
         shouldThrow<BadParameterValue> { C().parse("1 4 6 10") }
-            .message shouldBe "Invalid value for \"W\": 10 is not in the valid range of 7 to 8."
+            .formattedMessage shouldBe "Invalid value for \"W\": 10 is not in the valid range of 7 to 8."
     }
 
     @Test

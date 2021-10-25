@@ -6,6 +6,7 @@ import com.github.ajalt.clikt.parameters.arguments.default
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.testing.TestCommand
+import com.github.ajalt.clikt.testing.formattedMessage
 import com.github.ajalt.clikt.testing.parse
 import com.github.ajalt.clikt.testing.skipDueToKT33294
 import io.kotest.assertions.throwables.shouldThrow
@@ -41,7 +42,7 @@ class OptionTest {
 
         shouldThrow<NoSuchOption> {
             C().parse(argv)
-        }.message shouldBe message
+        }.formattedMessage shouldBe message
     }
 
     @Test
@@ -60,7 +61,7 @@ class OptionTest {
 
         shouldThrow<NoSuchOption> {
             C().parse(argv)
-        }.message shouldBe message
+        }.formattedMessage shouldBe message
     }
 
     @Test
@@ -206,9 +207,9 @@ class OptionTest {
             val x by option("-x", "--xx").pair()
             val y by option("-y", "--yy").pair()
         }
-        shouldThrow<IncorrectOptionValueCount> { C().parse("-x") }.message shouldBe
+        shouldThrow<IncorrectOptionValueCount> { C().parse("-x") }.formattedMessage shouldBe
                 "option -x requires 2 values"
-        shouldThrow<UsageError> { C().parse("--yy foo bar baz") }.message shouldBe
+        shouldThrow<UsageError> { C().parse("--yy foo bar baz") }.formattedMessage shouldBe
                 "Got unexpected extra argument (baz)"
     }
 
@@ -428,7 +429,7 @@ class OptionTest {
 
         shouldThrow<MissingOption> {
             C().parse("")
-        }.message shouldBe "Missing option \"--x\""
+        }.formattedMessage shouldBe "Missing option \"--x\""
     }
 
     @Test
@@ -510,7 +511,7 @@ class OptionTest {
         C(true).apply { parse("--x 2 --x 3"); x shouldBe listOf("2", "3") }
 
         shouldThrow<MissingOption> { C(false).parse("") }
-            .message shouldBe "Missing option \"--x\""
+            .formattedMessage shouldBe "Missing option \"--x\""
     }
 
     @Test
@@ -583,7 +584,7 @@ class OptionTest {
             val w by option().required().check(lazyMessage = { "fail $it" }) { it == "foo" }
         }
 
-        shouldThrow<BadParameterValue> { C().parse(argv) }.message shouldBe message
+        shouldThrow<BadParameterValue> { C().parse(argv) }.formattedMessage shouldBe message
     }
 
     @Test
@@ -777,10 +778,10 @@ class OptionTest {
             val y by option().deprecated("err", error = true)
         }
         shouldThrow<CliktError> { C().parse("--x") }
-            .message shouldBe "ERROR: option --x is deprecated"
+            .formattedMessage shouldBe "ERROR: option --x is deprecated"
 
         shouldThrow<CliktError> { C().parse("--y=1") }
-            .message shouldBe "err"
+            .formattedMessage shouldBe "err"
     }
 
     @Test

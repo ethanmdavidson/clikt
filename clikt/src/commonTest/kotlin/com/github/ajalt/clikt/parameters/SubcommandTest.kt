@@ -11,6 +11,7 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.testing.TestCommand
+import com.github.ajalt.clikt.testing.formattedMessage
 import com.github.ajalt.clikt.testing.parse
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.data.blocking.forAll
@@ -250,10 +251,11 @@ class SubcommandTest {
             val arg by argument()
         }
 
+        val p = Parent()
         shouldThrow<UsageError> {
-            Parent().subcommands(Child().subcommands(Grandchild()))
+            p.subcommands(Child().subcommands(Grandchild()))
                 .parse("child grandchild")
-        }.helpMessage() shouldBe """
+        }.let { p.getFormattedError(it) } shouldBe """
             |Usage: parent child grandchild [OPTIONS] ARG
             |
             |Error: Missing argument "ARG"
@@ -272,7 +274,7 @@ class SubcommandTest {
             TestCommand()
                 .subcommands(TestCommand(name = "foo"), TestCommand(name = "bar"), TestCommand(name = "baz"))
                 .parse(argv)
-        }.message shouldBe message
+        }.formattedMessage shouldBe message
     }
 
 
@@ -285,7 +287,7 @@ class SubcommandTest {
 
         shouldThrow<IllegalStateException> {
             root.subcommands(a.subcommands(b.subcommands(a))).parse("a b a")
-        }.message shouldBe "Command a already registered"
+        }.formattedMessage shouldBe "Command a already registered"
     }
 
     @Test
@@ -402,7 +404,7 @@ class SubcommandTest {
         val c = TestCommand(allowMultipleSubcommands = true).subcommands(sub)
         shouldThrow<UsageError> {
             c.parse("sub foo")
-        }.message shouldBe "Got unexpected extra argument (foo)"
+        }.formattedMessage shouldBe "Got unexpected extra argument (foo)"
     }
 
 

@@ -34,7 +34,7 @@ the prompt will ask the user to enter a different value.
 === "Example"
     ```kotlin
     val input = TermUi.prompt("Enter a number") {
-        it.toIntOrNull() ?: throw UsageError("$it is not a valid integer")
+        it.toIntOrNull() ?: throw BadParameterValue("$it is not a valid integer")
     }
     TermUi.echo("Twice your number is ${input * 2}")
     ```

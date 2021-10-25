@@ -9,6 +9,7 @@ import com.github.ajalt.clikt.core.UsageError
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.testing.TestCommand
+import com.github.ajalt.clikt.testing.formattedMessage
 import com.github.ajalt.clikt.testing.parse
 import com.github.ajalt.clikt.testing.skipDueToKT33294
 import io.kotest.assertions.throwables.shouldThrow
@@ -69,7 +70,7 @@ class OptionGroupsTest {
 
         shouldThrow<MissingOption> {
             C().parse("")
-        }.message shouldBe "Missing option \"--x\""
+        }.formattedMessage shouldBe "Missing option \"--x\""
     }
 
     @Test
@@ -89,7 +90,7 @@ class OptionGroupsTest {
         }
 
         shouldThrow<IllegalArgumentException> { C() }
-            .message shouldBe "Duplicate option name --x"
+            .formattedMessage shouldBe "Duplicate option name --x"
     }
 
     @Test
@@ -124,10 +125,10 @@ class OptionGroupsTest {
         C(true).apply { parse("--y=1 --y=2") }.g shouldBe "2"
 
         shouldThrow<MutuallyExclusiveGroupException> { C(false).parse("--x=1 --y=2") }
-            .message shouldBe "option --x cannot be used with --y or --z"
+            .formattedMessage shouldBe "option --x cannot be used with --y or --z"
 
         shouldThrow<MutuallyExclusiveGroupException> { C(false).parse("--y=1 --z=2") }
-            .message shouldBe "option --x cannot be used with --y or --z"
+            .formattedMessage shouldBe "option --x cannot be used with --y or --z"
     }
 
     @Test
@@ -143,7 +144,7 @@ class OptionGroupsTest {
         C(true).apply { parse("--x=1") }.g shouldBe Sealed.Sealed1
 
         shouldThrow<BadParameterValue> { C(false).parse("--y=1") }
-            .message should startWith("Invalid value for \"--y\"")
+            .formattedMessage should startWith("Invalid value for \"--y\"")
     }
 
     @Test
@@ -178,7 +179,7 @@ class OptionGroupsTest {
         }
 
         shouldThrow<IllegalArgumentException> { C() }
-            .message shouldBe "Duplicate option name --x"
+            .formattedMessage shouldBe "Duplicate option name --x"
     }
 
     @Test
@@ -205,7 +206,7 @@ class OptionGroupsTest {
             val g by mutuallyExclusiveOptions(option("--x"), option("--y")).required()
         }
         shouldThrow<UsageError> { C().parse("") }
-            .message shouldBe "Must provide one of --x, --y"
+            .formattedMessage shouldBe "Must provide one of --x, --y"
     }
 
     @Test
@@ -253,7 +254,7 @@ class OptionGroupsTest {
         }
 
         shouldThrow<UsageError> { C().parse("--y=2") }
-            .message shouldBe "Missing option \"--x\""
+            .formattedMessage shouldBe "Missing option \"--x\""
     }
 
     @Test
@@ -269,7 +270,7 @@ class OptionGroupsTest {
         }
 
         shouldThrow<IllegalArgumentException> { C() }
-            .message shouldBe "At least one option in a co-occurring group must use `required()`"
+            .formattedMessage shouldBe "At least one option in a co-occurring group must use `required()`"
     }
 
     @Test
@@ -306,7 +307,7 @@ class OptionGroupsTest {
         }
 
         shouldThrow<BadParameterValue> { C().parse("--g=3") }
-            .message shouldBe "Invalid value for \"--g\": invalid choice: 3. (choose from 1, 2)"
+            .formattedMessage shouldBe "Invalid value for \"--g\": invalid choice: 3. (choose from 1, 2)"
     }
 
     @Test
@@ -367,7 +368,7 @@ class OptionGroupsTest {
         }
 
         if (ec) C().parse(argv)
-        else shouldThrow<BadParameterValue> { C().parse(argv) }.message shouldBe "Invalid value for \"--x\": fail"
+        else shouldThrow<BadParameterValue> { C().parse(argv) }.formattedMessage shouldBe "Invalid value for \"--x\": fail"
     }
 
     @Test
@@ -394,7 +395,7 @@ class OptionGroupsTest {
         }
 
         if (ec) C().parse(argv)
-        else shouldThrow<UsageError> { C().parse(argv) }.message shouldBe em
+        else shouldThrow<UsageError> { C().parse(argv) }.formattedMessage shouldBe em
     }
 
     @Test
@@ -421,7 +422,7 @@ class OptionGroupsTest {
             }
         }
         if (ec) C().parse(argv)
-        else shouldThrow<UsageError> { C().parse(argv) }.message shouldBe "Invalid value for \"--y\": fail"
+        else shouldThrow<UsageError> { C().parse(argv) }.formattedMessage shouldBe "Invalid value for \"--y\": fail"
     }
 
     @Test

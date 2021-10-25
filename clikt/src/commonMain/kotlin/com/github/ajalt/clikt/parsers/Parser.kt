@@ -157,8 +157,8 @@ internal object Parser {
                     .filterKeys { !it.eager }
             }
 
+        // Finalize and validate everything as long as we aren't resuming a parse for multiple subcommands
         try {
-            // Finalize and validate everything as long as we aren't resuming a parse for multiple subcommands
             if (canRun) {
                 // Finalize eager options
                 invocationsByOption.forEach { (o, inv) -> if (o.eager) o.finalize(context, inv) }
@@ -220,7 +220,7 @@ internal object Parser {
             }
         } catch (e: UsageError) {
             // Augment usage errors with the current context if they don't have one
-            if (e.context == null) e.context = context
+            e.context = context
             throw e
         }
 
@@ -276,11 +276,9 @@ internal object Parser {
         val option = optionsByName[name] ?: if (ignoreUnknown) {
             return OptParseResult(1, listOf(tok), emptyList())
         } else {
-            throw NoSuchOption(
-                givenName = name,
-                possibilities = context.correctionSuggestor(name,
-                    optionsByName.filterNot { it.value.hidden }.keys.toList())
-            )
+            val possibilities = context.correctionSuggestor(name,
+                optionsByName.filterNot { it.value.hidden }.keys.toList())
+            throw NoSuchOption(name, possibilities)
         }
 
         return parseOptValues(option, name, ignoreUnknown, tokens, index, attachedValue, optionsByName, subcommandNames)
@@ -418,13 +416,13 @@ internal object Parser {
 
 
     private fun loadArgFile(filename: String, context: Context): List<String> {
-        val text = readFileIfExists(filename) ?: throw FileNotFound(filename, context)
+        val text = readFileIfExists(filename) ?: throw FileNotFound(filename)
         val toks = mutableListOf<String>()
         var inQuote: Char? = null
         val sb = StringBuilder()
         var i = 0
         fun err(msg: String): Nothing {
-            throw InvalidFileFormat(filename, msg, text.take(i).count { it == '\n' }, context)
+            throw InvalidFileFormat(filename, msg, text.take(i).count { it == '\n' })
         }
         loop@ while (i < text.length) {
             val c = text[i]

@@ -149,6 +149,7 @@ internal fun <EachT, AllT> deprecationTransformer(
     transformAll(it)
 }
 
+@PublishedApi
 internal fun Option.longestName(): String? = names.maxByOrNull { it.length }
 
 internal sealed class FinalValue {
