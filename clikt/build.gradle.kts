@@ -35,8 +35,10 @@ kotlin {
     }
 
     linuxX64()
+    linuxArm64()
     mingwX64()
     macosX64()
+    macosArm64()
 
     sourceSets {
         all {
@@ -48,7 +50,7 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 api(kotlin("test"))
-                api("io.kotest:kotest-assertions-core:4.5.0")
+                api("io.kotest:kotest-assertions-core:4.6.3")
             }
         }
 
@@ -62,14 +64,26 @@ kotlin {
         val nativeMain by creating {
             dependsOn(commonMain)
         }
-        val linuxX64Main by getting {
+        val linuxMain by creating {
             dependsOn(nativeMain)
+        }
+        val linuxX64Main by getting {
+            dependsOn(linuxMain)
+        }
+        val linuxArm64Main by getting {
+            dependsOn(linuxMain)
         }
         val mingwX64Main by getting {
             dependsOn(nativeMain)
         }
-        val macosX64Main by getting {
+        val macosMain by creating {
             dependsOn(nativeMain)
+        }
+        val macosX64Main by getting {
+            dependsOn(macosMain)
+        }
+        val macosArm64Main by getting {
+            dependsOn(macosMain)
         }
 
         val nativeTest by creating {
